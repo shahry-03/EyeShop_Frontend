@@ -33,7 +33,7 @@ export default function SessionsPage() {
       {isLoading ? (
         <div className="flex justify-center p-8"><Loader2 className="h-6 w-6 animate-spin text-blue-500" /></div>
       ) : (
-        <SessionsList initialSessions={sessions} accessToken="" />
+        <SessionsList initialSessions={sessions} />
       )}
     </div>
   );

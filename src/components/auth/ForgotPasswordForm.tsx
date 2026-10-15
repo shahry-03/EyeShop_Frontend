@@ -9,10 +9,11 @@ import { Loader2, ArrowRight, ArrowLeft, Mail, Send } from "lucide-react";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { apiClient } from "@/lib/api-client";
+import { cn } from "@/lib/utils";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -65,12 +66,13 @@ export function ForgotPasswordForm() {
             instructions.
           </p>
         </div>
-        <Button asChild variant="outline" className="w-full h-12 text-base font-medium">
-          <Link href="/login">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to login
-          </Link>
-        </Button>
+        <Link
+          href="/login"
+          className={cn(buttonVariants({ variant: "outline" }), "w-full h-12 text-base font-medium flex items-center justify-center")}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to login
+        </Link>
       </div>
     );
   }

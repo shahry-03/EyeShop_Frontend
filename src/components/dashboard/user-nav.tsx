@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
-import { LogOut, User, Settings, Shield } from "lucide-react";
+import { LogOut, User, Settings, Shield, ShoppingBag, MapPin, Store } from "lucide-react";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
@@ -125,6 +125,18 @@ export function UserNav({ user: serverUser }: UserNavProps) {
 
         {/* ─── Navigation items ─── */}
         <DropdownMenuGroup className="p-1.5">
+          <DropdownMenuItem onClick={() => router.push("/")} className="cursor-pointer rounded-lg focus:bg-slate-50 dark:focus:bg-slate-800 focus:text-slate-900 dark:focus:text-white py-2">
+            <Store className="mr-2.5 h-4 w-4 text-slate-400" />
+            <span className="text-[14px] font-medium">EyeShop Store</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push("/dashboard/orders")} className="cursor-pointer rounded-lg focus:bg-slate-50 dark:focus:bg-slate-800 focus:text-slate-900 dark:focus:text-white py-2">
+            <ShoppingBag className="mr-2.5 h-4 w-4 text-slate-400" />
+            <span className="text-[14px] font-medium">My Orders</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push("/dashboard/addresses")} className="cursor-pointer rounded-lg focus:bg-slate-50 dark:focus:bg-slate-800 focus:text-slate-900 dark:focus:text-white py-2">
+            <MapPin className="mr-2.5 h-4 w-4 text-slate-400" />
+            <span className="text-[14px] font-medium">Saved Addresses</span>
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => router.push("/dashboard/profile")} className="cursor-pointer rounded-lg focus:bg-slate-50 dark:focus:bg-slate-800 focus:text-slate-900 dark:focus:text-white py-2">
             <User className="mr-2.5 h-4 w-4 text-slate-400" />
             <span className="text-[14px] font-medium">Profile</span>

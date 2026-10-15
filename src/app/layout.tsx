@@ -1,25 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: {
-    default: "Universal Auth — Production-Grade Authentication",
-    template: "%s · Universal Auth",
+    default: "EyeShop — E-Commerce Platform for Local People & Businesses",
+    template: "%s · EyeShop",
   },
   description:
-    "A complete, production-ready authentication backend with JWT, OAuth2, 2FA, RBAC, rate limiting, and email verification. Built with Spring Boot 3 & Next.js 16.",
+    "An E-Commerce Platform for Local People and Businesses. Quality eyewear, precision prescription lenses, designer frames, and accessories.",
   keywords: [
     "authentication",
     "JWT",
@@ -59,12 +49,16 @@ export const metadata: Metadata = {
 
 import { ThemeProvider } from "@/components/theme-provider";
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className="h-full antialiased font-sans"
     >
       <body className="min-h-full flex flex-col">
         <ThemeProvider

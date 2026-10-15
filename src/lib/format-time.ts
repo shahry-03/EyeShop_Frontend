@@ -30,6 +30,8 @@ export function formatRelativeTime(iso: string | null | undefined): string {
   return `${diffMonths} month${diffMonths > 1 ? "s" : ""} ago`;
 }
 
+export const formatTimeAgo = formatRelativeTime;
+
 // ============================================================
 //  Format absolute date — "Oct 5, 2026"
 // ============================================================
@@ -44,4 +46,21 @@ export function formatDate(iso: string | null | undefined): string {
   ];
 
   return `${months[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`;
+}
+
+// ============================================================
+//  Format date and time — "Oct 5, 2026, 04:30 PM"
+// ============================================================
+export function formatDateTime(iso: string | null | undefined): string {
+  if (!iso) return "Unknown";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "Unknown";
+
+  const dateStr = formatDate(iso);
+  const hours = d.getHours();
+  const minutes = d.getMinutes().toString().padStart(2, "0");
+  const ampm = hours >= 12 ? "PM" : "AM";
+  const formattedHours = hours % 12 || 12;
+
+  return `${dateStr}, ${formattedHours}:${minutes} ${ampm}`;
 }
