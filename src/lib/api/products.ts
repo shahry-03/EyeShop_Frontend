@@ -1,6 +1,7 @@
 import { apiClient } from "@/lib/api-client";
 import type {
   Product,
+  ProductImage,
   PageResponse,
   ProductAddRequest,
   ProductUpdateRequest,
@@ -15,13 +16,13 @@ export const productsApi = {
   },
 
   async getProductsByCategory(
-    category: string,
+    categoryId: number,
     page = 0,
     size = 20,
     sort = "createdAt,desc"
   ): Promise<PageResponse<Product>> {
     const res = await apiClient.get<{ data: PageResponse<Product> }>(
-      `/products/category/${encodeURIComponent(category)}?page=${page}&size=${size}&sort=${sort}`
+      `/products/category/${categoryId}?page=${page}&size=${size}&sort=${sort}`
     );
     return res.data.data;
   },
@@ -43,5 +44,39 @@ export const productsApi = {
 
   async deleteProduct(id: number): Promise<void> {
     await apiClient.delete(`/products/${id}`);
+  },
+
+  // ═══════════════════════════════════════════════════════════
+  //  Image Management (Cloudinary)
+  // ═══════════════════════════════════════════════════════════
+  async getProductImages(productId: number): Promise<ProductImage[]> {
+    const res = await apiClient.get<{ data: ProductImage[] }>(
+      `/products/${productId}/images`
+    );
+    return res.data.data;
+  },
+
+  async uploadProductImage(productId: number, file: File): Promise<ProductImage> {
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await apiClient.post<{ data: ProductImage }>(
+      `/products/${productId}/images`,
+      formData
+    );
+    return res.data.data;
+  },
+
+  async deleteProductImage(productId: number, imageId: number): Promise<void> {
+    await apiClient.delete(`/products/${productId}/images/${imageId}`);
+  },
+
+  async setPrimaryProductImage(
+    productId: number,
+    imageId: number
+  ): Promise<ProductImage> {
+    const res = await apiClient.patch<{ data: ProductImage }>(
+      `/products/${productId}/images/${imageId}/primary`
+    );
+    return res.data.data;
   },
 };

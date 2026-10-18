@@ -244,8 +244,8 @@ export default function LandingPage() {
             <Link href="/dashboard" className="hover:text-indigo-600">
               Dashboard
             </Link>
-            <Link href="/playground" className="hover:text-indigo-600">
-              API Playground
+            <Link href="/dashboard/orders" className="hover:text-indigo-600">
+              My Orders
             </Link>
           </div>
         </div>

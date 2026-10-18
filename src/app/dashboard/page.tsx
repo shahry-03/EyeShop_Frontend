@@ -104,14 +104,14 @@ export default function DashboardOverviewPage() {
             Shop Catalog
           </Link>
           <Link
-            href="/playground"
+            href="/dashboard/orders"
             className={cn(
               buttonVariants({ variant: "outline" }),
               "h-10 gap-2 rounded-xl border-slate-200 dark:border-slate-800 text-xs font-semibold"
             )}
           >
-            <Sparkles className="h-4 w-4 text-indigo-500" />
-            API Playground
+            <Package className="h-4 w-4 text-indigo-500" />
+            My Orders
           </Link>
         </div>
       </div>

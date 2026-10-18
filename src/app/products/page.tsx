@@ -7,7 +7,9 @@ import { CartDrawer } from "@/components/store/cart-drawer";
 import { ProductCard } from "@/components/store/product-card";
 import { CategoryBar } from "@/components/store/category-bar";
 import { productsApi } from "@/lib/api/products";
+import { categoriesApi } from "@/lib/api/categories";
 import type { Product, PageResponse } from "@/types/product";
+import type { Category } from "@/types/category";
 import {
   Search,
   ShoppingBag,
@@ -19,33 +21,32 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const DEFAULT_CATEGORIES = [
-  "Eyewear",
-  "Frames",
-  "Sunglasses",
-  "Reading Glasses",
-  "Lenses",
-  "Optical Accessories",
-  "Lens Care",
-];
-
 export default function ProductsCatalogPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [pageInfo, setPageInfo] = useState<PageResponse<Product> | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthRequired, setIsAuthRequired] = useState(false);
 
-  const fetchProducts = useCallback(async (page: number, category: string) => {
+  // Load category hierarchy
+  useEffect(() => {
+    categoriesApi
+      .getCategoryTree()
+      .then((tree) => setCategories(tree || []))
+      .catch(() => {});
+  }, []);
+
+  const fetchProducts = useCallback(async (page: number, categoryId: number | null) => {
     try {
       setIsLoading(true);
       setIsAuthRequired(false);
 
       let data: PageResponse<Product>;
-      if (category) {
-        data = await productsApi.getProductsByCategory(category, page, 12);
+      if (categoryId !== null) {
+        data = await productsApi.getProductsByCategory(categoryId, page, 12);
       } else {
         data = await productsApi.getProducts(page, 12);
       }
@@ -69,11 +70,11 @@ export default function ProductsCatalogPage() {
   }, []);
 
   useEffect(() => {
-    fetchProducts(currentPage, selectedCategory);
-  }, [currentPage, selectedCategory, fetchProducts]);
+    fetchProducts(currentPage, selectedCategoryId);
+  }, [currentPage, selectedCategoryId, fetchProducts]);
 
-  const handleCategoryChange = (cat: string) => {
-    setSelectedCategory(cat);
+  const handleCategoryChange = (catId: number | null) => {
+    setSelectedCategoryId(catId);
     setCurrentPage(0);
   };
 
@@ -84,14 +85,9 @@ export default function ProductsCatalogPage() {
     return (
       p.name.toLowerCase().includes(q) ||
       p.description?.toLowerCase().includes(q) ||
-      p.category?.toLowerCase().includes(q)
+      p.category?.name?.toLowerCase().includes(q)
     );
   });
-
-  // Extract all categories found in products or fallback to default
-  const discoveredCategories = Array.from(
-    new Set([...DEFAULT_CATEGORIES, ...products.map((p) => p.category).filter(Boolean)])
-  );
 
   return (
     <div className="flex min-h-screen flex-col font-sans bg-[#FAFAFB] dark:bg-[#060913] text-slate-900 dark:text-slate-100">
@@ -129,8 +125,8 @@ export default function ProductsCatalogPage() {
 
           {/* Category Bar */}
           <CategoryBar
-            categories={discoveredCategories}
-            selectedCategory={selectedCategory}
+            categories={categories}
+            selectedCategoryId={selectedCategoryId}
             onSelectCategory={handleCategoryChange}
           />
 

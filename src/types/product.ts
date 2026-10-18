@@ -1,10 +1,23 @@
+import type { Category } from "./category";
+
+export interface ProductImage {
+  id: number;
+  url: string;
+  publicId: string;
+  isPrimary: boolean;
+  displayOrder: number;
+}
+
 export interface Product {
   id: number;
   name: string;
   description: string;
   price: number;
   stock: number;
-  category: string;
+  category?: Category | null;
+  images?: ProductImage[];
+  averageRating?: number | null;
+  totalReviews?: number | null;
   createdAt: string;
 }
 
@@ -26,12 +39,12 @@ export interface ProductAddRequest {
   description: string;
   price: number;
   stock: number;
-  category: string;
+  categoryId: number;
 }
 
 export interface ProductUpdateRequest {
   name: string;
   description: string;
   price: number;
-  category: string;
+  categoryId: number;
 }

@@ -11,6 +11,7 @@ import {
   Store,
   ArrowRight,
   ShieldAlert,
+  FolderTree,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
@@ -65,6 +66,29 @@ export default function AdminDashboardPage() {
           </div>
           <div className="mt-6 flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400">
             Open Products Catalog <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+          </div>
+        </Link>
+
+        {/* Categories */}
+        <Link
+          href="/dashboard/admin/categories"
+          className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0A0F1C] p-6 transition-all hover:-translate-y-1 hover:border-emerald-400 dark:hover:border-emerald-500/40 hover:shadow-lg hover:shadow-emerald-500/5"
+        >
+          <div>
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 transition-transform group-hover:scale-105">
+              <FolderTree className="h-6 w-6" />
+            </div>
+            <div className="mt-4">
+              <h3 className="font-bold text-base text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                Manage Categories
+              </h3>
+              <p className="mt-1 text-xs text-slate-500 leading-relaxed">
+                Organize products into hierarchical parent categories and subcategories.
+              </p>
+            </div>
+          </div>
+          <div className="mt-6 flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+            Open Categories Center <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
           </div>
         </Link>
 

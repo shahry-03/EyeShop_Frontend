@@ -18,11 +18,13 @@ import {
   Truck,
   ShieldCheck,
   RotateCcw,
-  Sparkles,
   Loader2,
   CheckCircle2,
+  Star,
 } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { ProductReviews } from "@/components/reviews/product-reviews";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -31,6 +33,7 @@ export default function ProductDetailPage() {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
   const [isBuyingNow, setIsBuyingNow] = useState(false);
@@ -45,6 +48,10 @@ export default function ProductDetailPage() {
       .getProductById(productId)
       .then((data) => {
         setProduct(data);
+        if (data.images && data.images.length > 0) {
+          const primaryIdx = data.images.findIndex((img) => img.isPrimary);
+          setSelectedImageIndex(primaryIdx >= 0 ? primaryIdx : 0);
+        }
       })
       .catch((err) => {
         toast.error("Product not found or unavailable");
@@ -109,38 +116,111 @@ export default function ProductDetailPage() {
           </Link>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-            {/* Left: Product Showcase Banner */}
-            <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0A0F1C] p-12 flex items-center justify-center min-h-[420px] shadow-sm">
-              <div className="flex h-36 w-36 items-center justify-center rounded-3xl bg-indigo-50 dark:bg-indigo-950/40 text-7xl shadow-xl shadow-indigo-500/10 transition-transform duration-300 hover:scale-105">
-                🛍️
-              </div>
-
-              <div className="absolute top-6 left-6">
-                <Badge variant="outline" className="text-xs font-semibold uppercase tracking-wider bg-white/80 dark:bg-slate-900/80 backdrop-blur-xs">
-                  {product.category}
-                </Badge>
-              </div>
-
-              <div className="absolute top-6 right-6">
-                {isOutOfStock ? (
-                  <Badge variant="destructive">Out of Stock</Badge>
-                ) : isLowStock ? (
-                  <Badge variant="warning">Only {product.stock} left in stock</Badge>
+            {/* Left: Product Showcase & Image Gallery */}
+            <div className="space-y-4">
+              <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0A0F1C] flex items-center justify-center min-h-[420px] max-h-[500px] shadow-sm p-6">
+                {product.images && product.images.length > 0 && product.images[selectedImageIndex]?.url ? (
+                  <img
+                    src={product.images[selectedImageIndex].url}
+                    alt={product.name}
+                    className="w-full h-full max-h-[450px] object-contain transition-transform duration-300 hover:scale-105"
+                  />
                 ) : (
-                  <Badge variant="success">In Stock ({product.stock} units)</Badge>
+                  <div className="flex h-36 w-36 items-center justify-center rounded-3xl bg-indigo-50 dark:bg-indigo-950/40 text-7xl shadow-xl shadow-indigo-500/10 transition-transform duration-300 hover:scale-105">
+                    🛍️
+                  </div>
                 )}
+
+                <div className="absolute top-6 left-6 z-10">
+                  <Badge variant="outline" className="text-xs font-semibold uppercase tracking-wider bg-white/90 dark:bg-slate-900/90 backdrop-blur-xs shadow-xs">
+                    {product.category?.name || "General"}
+                  </Badge>
+                </div>
+
+                <div className="absolute top-6 right-6 z-10">
+                  {isOutOfStock ? (
+                    <Badge variant="destructive">Out of Stock</Badge>
+                  ) : isLowStock ? (
+                    <Badge variant="warning">Only {product.stock} left in stock</Badge>
+                  ) : (
+                    <Badge variant="success">In Stock ({product.stock} units)</Badge>
+                  )}
+                </div>
               </div>
+
+              {/* Thumbnails */}
+              {product.images && product.images.length > 1 && (
+                <div className="flex items-center gap-3 overflow-x-auto pb-2 pt-1">
+                  {product.images.map((img, idx) => {
+                    const isSelected = idx === selectedImageIndex;
+                    return (
+                      <button
+                        key={img.id}
+                        type="button"
+                        onClick={() => setSelectedImageIndex(idx)}
+                        className={cn(
+                          "relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border-2 transition-all p-1 bg-white dark:bg-[#0A0F1C]",
+                          isSelected
+                            ? "border-indigo-600 ring-2 ring-indigo-500/20 scale-105 shadow-md"
+                            : "border-slate-200 dark:border-slate-800 hover:border-indigo-300 opacity-70 hover:opacity-100"
+                        )}
+                      >
+                        <img
+                          src={img.url}
+                          alt={`${product.name} ${idx + 1}`}
+                          className="h-full w-full object-cover rounded-lg"
+                        />
+                        {img.isPrimary && (
+                          <span className="absolute bottom-1 right-1 rounded-full bg-indigo-600 text-[9px] font-bold text-white px-1.5 py-0.5 leading-none shadow-xs">
+                            ★
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Right: Details & Purchase Actions */}
             <div className="space-y-6">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-                  {product.category}
-                </span>
+                {product.category?.name && (
+                  <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                    {product.category.name}
+                  </span>
+                )}
                 <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white mt-1">
                   {product.name}
                 </h1>
+
+                {/* Rating Snippet */}
+                <div className="mt-2.5 flex items-center gap-2">
+                  <div className="flex items-center text-amber-400">
+                    <Star className="h-4 w-4 fill-current" />
+                    <span className="ml-1 text-sm font-bold text-slate-800 dark:text-slate-200">
+                      {product.averageRating && product.averageRating > 0
+                        ? product.averageRating.toFixed(1)
+                        : "New"}
+                    </span>
+                  </div>
+                  <span className="text-slate-300 dark:text-slate-700">·</span>
+                  <a
+                    href="#reviews"
+                    className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
+                  >
+                    {product.totalReviews || 0} {product.totalReviews === 1 ? "review" : "reviews"}
+                  </a>
+                  {Boolean(product.totalReviews && product.totalReviews > 0) && (
+                    <>
+                      <span className="text-slate-300 dark:text-slate-700">·</span>
+                      <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+                        <CheckCircle2 className="h-3 w-3" /> Verified Purchases
+                      </span>
+                    </>
+                  )}
+                </div>
+
                 <div className="mt-4 flex items-baseline gap-3">
                   <span className="text-3xl font-black text-slate-900 dark:text-white">
                     ${product.price.toFixed(2)}
@@ -244,6 +324,19 @@ export default function ProductDetailPage() {
               </div>
             </div>
           </div>
+
+          {/* Customer Reviews & Ratings */}
+          <ProductReviews
+            productId={product.id}
+            productName={product.name}
+            averageRating={product.averageRating}
+            totalReviews={product.totalReviews}
+            onReviewChanged={() => {
+              if (productId && !isNaN(productId)) {
+                productsApi.getProductById(productId).then(setProduct).catch(() => {});
+              }
+            }}
+          />
         </div>
       </main>
     </div>

@@ -16,7 +16,7 @@ import {
   Users,
   ShieldCheck,
   Key,
-  Plug,
+  FolderTree,
   ArrowUpRight,
   type LucideIcon,
 } from "lucide-react";
@@ -77,6 +77,11 @@ const adminNavItems: NavItem[] = [
     title: "Manage Products",
     href: "/dashboard/admin/products",
     icon: Package,
+  },
+  {
+    title: "Manage Categories",
+    href: "/dashboard/admin/categories",
+    icon: FolderTree,
   },
   {
     title: "Manage Orders",
@@ -218,16 +223,6 @@ export function Sidebar({ user }: { user?: SidebarUser }) {
           <span className="flex items-center gap-2.5">
             <Store className="h-4 w-4 text-slate-400 group-hover:text-indigo-500 transition-colors" />
             Visit Store
-          </span>
-          <ArrowUpRight className="h-3.5 w-3.5 opacity-50 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:opacity-100" />
-        </Link>
-        <Link
-          href="/playground"
-          className="group flex items-center justify-between gap-2 rounded-[10px] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 px-4 py-2.5 text-[13px] font-medium text-slate-600 dark:text-slate-400 shadow-sm transition-all hover:border-indigo-300 dark:hover:border-indigo-500/30 hover:text-indigo-600 dark:hover:text-indigo-400"
-        >
-          <span className="flex items-center gap-2.5">
-            <Plug className="h-4 w-4 text-slate-400 group-hover:text-indigo-500 transition-colors" />
-            API Playground
           </span>
           <ArrowUpRight className="h-3.5 w-3.5 opacity-50 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:opacity-100" />
         </Link>
